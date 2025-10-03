@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Интересные места - Главная</title>
+        <link rel="stylesheet" href="/public/css/style.css">
+    </head>
+    <body>
+        <header class="header">
+            <div class="container">
+                <h1>Откройте удивительные места</h1>
+                <p>Лучшие локации для вашего следующего приключения</p>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="/admin-login.html" style="color: white; text-decoration: underline; font-size: 1.1rem;">
+                        🔐 Админ-панель
+                    </a>
+                </div>
+            </div>
+        </header>
+        <main class="container">
+            <div id="loading" class="loading">Загрузка мест...</div>
+            <div id="error" class="error" style="display: none;"></div>
+            <div id="placesGrid" class="places-grid"></div>
+        </main>
+        <script src="/public/js/script.js"></script>
+    </body>
+</html>

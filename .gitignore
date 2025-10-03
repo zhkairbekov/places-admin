@@ -1,0 +1,124 @@
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime данные
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Директория для покрытия кода тестами
+coverage/
+.nyc_output
+
+# Grunt промежуточные результаты
+.grunt
+
+# node-waf конфигурация
+.lock-wscript
+
+# Компилированные бинарные аддоны
+build/Release
+
+# Зависимости
+node_modules/
+jspm_packages/
+
+# ТипыScript кэш
+*.tsbuildinfo
+
+# Необязательные npm каталоги
+.npm
+
+# Необязательные eslint кэш
+.eslintcache
+
+# Микробилд кэш
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Воркеру необходмиы
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# parcel-bundler кэш
+.cache
+.parcel-cache
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Резервные копии данных
+data/backup/
+
+# Временные файлы
+tmp/
+temp/
+
+# Файлы пакетов менеджеров
+package-lock.json
+yarn.lock
+
+# Документация
+docs/_build/
+
+# Билды
+dist/
+build/
+
+# Локальная база данных
+*.db
+*.sqlite
+*.sqlite3
+
+# Файлы сессий
+sessions/
+
+# Локальные настройки
+local.config.js
+config/local.json
+
+# Файлы загрузок
+uploads/
+public/uploads/
+
+# Docker
+docker-compose.override.yml
+
+# Логи приложения
+logs/
+*.log.*
+
+# Кэш
+.cache/
+*.cache
