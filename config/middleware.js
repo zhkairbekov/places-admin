@@ -13,6 +13,15 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+// Rate limiting для загрузки файлов
+const uploadLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20, // 20 загрузок за 15 минут
+    message: { error: 'Слишком много загрузок, попробуйте позже' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 function setupMiddleware(app) {
     // Middleware безопасности
     if (process.env.NODE_ENV === 'production') {
@@ -22,7 +31,8 @@ function setupMiddleware(app) {
                     defaultSrc: ["'self'"],
                     styleSrc: ["'self'", "'unsafe-inline'"],
                     scriptSrc: ["'self'"],
-                    imgSrc: ["'self'", "data:", "https:"]
+                    imgSrc: ["'self'", "data:", "blob:", "https:"],
+                    connectSrc: ["'self'"]
                 }
             }
         }));
@@ -34,14 +44,15 @@ function setupMiddleware(app) {
                     styleSrc: ["'self'", "'unsafe-inline'"],
                     scriptSrc: ["'self'", "'unsafe-inline'"],
                     scriptSrcAttr: ["'unsafe-inline'"],
-                    imgSrc: ["'self'", "data:", "https:"]
+                    imgSrc: ["'self'", "data:", "blob:", "https:"],
+                    connectSrc: ["'self'"]
                 }
             }
         }));
     }
 
-    app.use(express.json({ limit: '10mb' }));
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json({ limit: '50mb' })); // Увеличили лимит для base64
+    app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
     // Статические файлы - CSS, JS
     app.use('/public', express.static('public', {
@@ -59,7 +70,7 @@ function setupMiddleware(app) {
         }
     }));
 
-    // Настройка сессий - ВЕЧНАЯ СЕССИЯ
+    // Настройка сессий
     app.use(session({
         secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
         resave: true,
@@ -67,16 +78,16 @@ function setupMiddleware(app) {
         cookie: {
             secure: false,
             httpOnly: true,
-            maxAge: 365 * 24 * 60 * 60 * 1000 // 1 ГОД вместо 2 часов
+            maxAge: 365 * 24 * 60 * 60 * 1000
         },
-        // Отключаем автоматическое удаление старых сессий
         rolling: false
     }));
 
-    // Rate limiting для авторизации
+    // Rate limiting
     app.use('/api/auth/login', authLimiter);
+    app.use('/api/upload', uploadLimiter);
 
-    // Логирование запросов для отладки
+    // Логирование запросов
     app.use((req, res, next) => {
         console.log('📨', new Date().toISOString(), req.method, req.url);
         next();

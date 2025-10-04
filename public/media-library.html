@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Медиатека - Панель управления</title>
+    <link rel="stylesheet" href="/public/css/admin.css">
+    <link rel="stylesheet" href="/public/css/media-library.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <nav class="admin-nav">
+                <div class="admin-title">🖼️ Медиатека</div>
+                <div class="admin-actions">
+                    <a href="/admin" class="btn btn-secondary">← Назад к местам</a>
+                    <button id="uploadMediaBtn" class="btn btn-primary">📁 Загрузить</button>
+                    <button id="logoutBtn" class="btn btn-danger">Выйти</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="admin-content">
+            <div class="media-library-page">
+                <!-- Панель инструментов -->
+                <div class="media-toolbar">
+                    <div class="toolbar-left">
+                        <button id="selectAllBtn" class="btn btn-outline">Выбрать все</button>
+                        <button id="deselectAllBtn" class="btn btn-outline">Снять выделение</button>
+                        <button id="deleteSelectedBtn" class="btn btn-danger" disabled>🗑️ Удалить выбранные</button>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="search-box">
+                            <input type="text" id="searchMedia" placeholder="Поиск по названиям..." class="form-control">
+                        </div>
+                        <select id="sortMedia" class="form-control">
+                            <option value="newest">Сначала новые</option>
+                            <option value="oldest">Сначала старые</option>
+                            <option value="name">По имени</option>
+                            <option value="size">По размеру</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Статистика -->
+                <div class="media-stats">
+                    <span id="selectedCount">Выбрано: 0</span>
+                    <span id="totalCount">Всего: 0</span>
+                    <span id="totalSize">Общий размер: 0</span>
+                </div>
+
+                <!-- Сетка изображений -->
+                <div class="media-grid-container">
+                    <div id="mediaGrid" class="media-grid">
+                        <div class="loading-container">
+                            <div class="loading">Загрузка медиатеки...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Пагинация -->
+                <div class="pagination" id="pagination">
+                    <!-- Пагинация будет генерироваться динамически -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно детального просмотра -->
+    <div id="imageViewerModal" class="modal">
+        <div class="modal-content image-viewer-content">
+            <div class="image-viewer-header">
+                <div class="image-info">
+                    <span id="viewerImageName">image.jpg</span>
+                    <span id="viewerImageSize">0 KB</span>
+                </div>
+                <div class="viewer-controls">
+                    <button id="prevImage" class="btn btn-outline" title="Предыдущее (←)">⬅️</button>
+                    <span id="imageCounter">1 / 10</span>
+                    <button id="nextImage" class="btn btn-outline" title="Следующее (→)">➡️</button>
+                    <button id="downloadImage" class="btn btn-outline" title="Скачать">📥</button>
+                    <button id="cropImage" class="btn btn-outline" title="Обрезать">✂️</button>
+                    <button class="close" data-modal="imageViewerModal" title="Закрыть (Esc)">✕</button>
+                </div>
+            </div>
+            
+            <div class="image-viewer-body">
+                <div class="image-container">
+                    <img id="viewerImage" src="" alt="">
+                    <div class="crop-overlay" id="cropOverlay" style="display: none;">
+                        <div class="crop-area" id="cropArea"></div>
+                        <div class="crop-controls">
+                            <button id="applyCrop" class="btn btn-success">Применить</button>
+                            <button id="cancelCrop" class="btn btn-danger">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-details">
+                    <div class="detail-section">
+                        <h4>Информация</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">Имя файла:</span>
+                            <span id="detailFilename">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Размер:</span>
+                            <span id="detailSize">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Загружено:</span>
+                            <span id="detailUploaded">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Размеры:</span>
+                            <span id="detailDimensions">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Тип:</span>
+                            <span id="detailType">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h4>URL изображения</h4>
+                        <div class="url-container">
+                            <input type="text" id="imageUrl" readonly class="form-control">
+                            <button id="copyUrl" class="btn btn-outline">📋</button>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h4>Действия</h4>
+                        <div class="action-buttons">
+                            <button id="replaceImage" class="btn btn-warning">🔄 Заменить</button>
+                            <button id="deleteCurrentImage" class="btn btn-danger">🗑️ Удалить</button>
+                            <input type="file" id="replaceFileInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно загрузки -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📁 Загрузка изображений</h3>
+                <button class="close" data-modal="uploadModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📁</div>
+                        <p>Перетащите изображения сюда</p>
+                        <p class="upload-hint">или нажмите для выбора файлов</p>
+                        <p class="upload-restrictions">Максимум 10 файлов, до 5MB каждый</p>
+                    </div>
+                    <input type="file" id="bulkUploadInput" multiple accept="image/*" style="display: none;">
+                </div>
+                
+                <div id="uploadQueue" class="upload-queue" style="display: none;">
+                    <h4>Очередь загрузки:</h4>
+                    <div id="queueList"></div>
+                    <button id="startUpload" class="btn btn-success">Начать загрузку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/media-library.js"></script>
+</body>
+</html>

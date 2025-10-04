@@ -21,8 +21,12 @@ router.get('/', (req, res) => {
         if (isAuthenticated) {
             // Добавляем ссылку для авторизованных
             html = html.replace(
-                '<p>Лучшие локации для вашего следующего приключения</p>',
-                '<p>Лучшие локации для вашего следующего приключения</p><div style="text-align: center; margin-top: 1rem;"><a href="/admin" style="color: white; text-decoration: underline; font-size: 1.1rem;">🔐 Админ-панель</a></div>'
+                `<p>Лучшие локации для вашего следующего приключения</p>`,
+                `<p>Лучшие локации для вашего следующего приключения</p>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="/admin" style="color: white; text-decoration: underline; font-size: 1.1rem;">🔐 Админ-панель</a> 
+                    | <a href="/media-library" style="color: white; text-decoration: underline; font-size: 1.1rem;">🖼️ Медиатека</a>
+                </div>`
             );
         }
         
@@ -50,6 +54,11 @@ router.get('/admin', checkAdminAuth, (req, res) => {
 
 router.get('/dashboard', checkAdminAuth, (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'admin.html'));
+});
+
+// Медиатека - ДОБАВЬТЕ ЭТОТ МАРШРУТ
+router.get('/media-library', checkAdminAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'media-library.html'));
 });
 
 // Статические файлы - разрешаем доступ к CSS, JS, изображениям

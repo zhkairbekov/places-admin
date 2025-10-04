@@ -8,9 +8,9 @@
       "address": "Дворцовая пл., 2, Санкт-Петербург",
       "price": 3500,
       "rating": 4.8,
-      "image": "borovoe1305252002.webp",
+      "image": "/images/top.webp",
       "createdAt": "2024-01-15T10:00:00.000Z",
-      "updatedAt": "2025-10-04T08:51:07.305Z"
+      "updatedAt": "2025-10-04T12:14:16.682Z"
     },
     {
       "id": 2,
@@ -78,11 +78,11 @@
       "description": "asd",
       "category": "asd",
       "address": "asd",
-      "image": "borovoe1305252002.webp",
+      "image": "/images/1759577534548-990502554.jpg",
       "price": 11,
       "rating": 1,
       "createdAt": "2025-10-04T08:51:29.816Z",
-      "updatedAt": "2025-10-04T08:51:41.321Z"
+      "updatedAt": "2025-10-04T11:32:18.176Z"
     }
   ]
 }

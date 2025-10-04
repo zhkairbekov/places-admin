@@ -16,6 +16,8 @@
                         <div style="text-align: center;">
                             <a href="/" style="color: #667eea;">← На главную</a>
                         </div>
+                        <!-- В секции навигации добавьте: -->
+                        <a href="/media-library" class="btn btn-primary">🖼️ Медиатека</a>
                         <button id="viewBackupsBtn" class="btn btn-info">📁 Просмотр бэкапов</button>
                         <button id="cleanupBackupsBtn" class="btn btn-warning">Очистить бэкапы</button>
                         <button id="logoutBtn" class="btn btn-danger">Выйти</button>
@@ -26,7 +28,6 @@
                 <div class="places-management">
                     <div class="places-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h2>Управление местами</h2>
-
                         <button id="addPlaceBtn" class="btn btn-primary">Добавить место</button>
                     </div>
                     <div id="alertContainer"></div>
@@ -122,13 +123,35 @@
                             >
                         </div>
                         <div class="form-group">
-                            <label for="image">URL изображения</label>
-                            <input
-                                type="text"
-                                id="image"
-                                class="form-control"
-                                autocomplete="off"
-                            >
+                            <label for="image">Изображение</label>
+                            <div class="image-upload-container">
+                                <div class="upload-area" id="uploadArea">
+                                    <div class="upload-placeholder">
+                                        <div class="upload-icon">📁</div>
+                                        <p>Перетащите изображение сюда</p>
+                                        <p class="upload-hint">или нажмите для выбора файла</p>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        id="imageFile"
+                                        accept="image/*"
+                                        style="display: none;"
+                                    >
+                                </div>
+                                <div class="image-preview" id="imagePreview" style="display: none;">
+                                    <img id="previewImage" src="" alt="Превью">
+                                    <button type="button" class="btn btn-danger btn-sm" id="removeImage">🗑️</button>
+                                </div>
+                                <div class="url-input-container" style="display: flex; gap: 0.5rem;">
+                                    <input
+                                        type="text"
+                                        id="image"
+                                        class="form-control"
+                                        placeholder="URL изображения или выберите из медиатеки"
+                                    >
+                                    <button type="button" class="btn btn-outline-primary" id="browseMediaBtn">Обзор</button>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn" id="cancelBtn">Отмена</button>
@@ -171,6 +194,38 @@
                     <div class="form-actions" style="margin-top: 1rem;">
                         <button id="restoreBackupBtn" class="btn btn-success">🔄 Восстановить</button>
                         <button class="btn" data-modal="backupContentModal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно медиатеки -->
+        <div id="mediaLibraryModal" class="modal">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h3>🖼️ Медиатека</h3>
+                    <button class="close" data-modal="mediaLibraryModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="media-library-toolbar">
+                        <button id="uploadToLibraryBtn" class="btn btn-primary">📁 Загрузить новое</button>
+                        <button id="refreshLibraryBtn" class="btn btn-secondary">🔄 Обновить</button>
+                        <input
+                            type="file"
+                            id="libraryUploadInput"
+                            accept="image/*"
+                            style="display: none;"
+                        >
+                    </div>
+                    <div class="media-library-content">
+                        <div id="mediaLibraryGrid" class="media-library-grid">
+                            <div style="text-align: center; padding: 2rem;">
+                                <div class="loading">Загрузка изображений...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="margin-top: 1rem;">
+                        <button id="selectImageBtn" class="btn btn-success" disabled>✅ Выбрать</button>
+                        <button class="btn" data-modal="mediaLibraryModal">Отмена</button>
                     </div>
                 </div>
             </div>
