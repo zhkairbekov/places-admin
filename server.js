@@ -43,6 +43,7 @@ async function initializeServer() {
 app.listen(PORT, async () => {
     console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
     console.log(`🔐 Админ login: ${process.env.ADMIN_USER}`);
+    console.log(`🔐 Админ password: ${process.env.ADMIN_PASS}`);
     console.log(`🖼️ Медиатека доступна по /media-library`);
     
     // Проверяем и создаем необходимые директории

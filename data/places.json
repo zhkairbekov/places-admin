@@ -10,7 +10,7 @@
       "rating": 4.8,
       "image": "/images/top.webp",
       "createdAt": "2024-01-15T10:00:00.000Z",
-      "updatedAt": "2025-10-04T12:14:16.682Z"
+      "updatedAt": "2025-10-04T12:54:27.738Z"
     },
     {
       "id": 2,
@@ -20,9 +20,9 @@
       "address": "Красная пл., Москва",
       "price": 0,
       "rating": 4.8,
-      "image": "borovoe1305252002.webp",
+      "image": "/images/1759577534548-990502554.jpg",
       "createdAt": "2024-01-16T14:30:00.000Z",
-      "updatedAt": "2025-10-04T08:51:34.495Z"
+      "updatedAt": "2025-10-04T12:54:52.122Z"
     },
     {
       "id": 3,
