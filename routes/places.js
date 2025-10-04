@@ -2,7 +2,16 @@ const express = require('express');
 const { validationResult } = require('express-validator');
 const { requireAuth } = require('../middleware/auth');
 const { placeValidation } = require('../middleware/validation');
-const { loadPlaces, savePlaces, cleanData, cleanupOldBackups } = require('../utils/database'); // Исправленный импорт
+const {
+    loadPlaces,
+    savePlaces,
+    cleanData,
+    cleanupOldBackups,
+    getBackupsList,
+    getBackupContent,
+    restoreFromBackup,
+    deleteBackup
+} = require('../utils/database');
 const router = express.Router();
 
 // Получение всех мест (публичный доступ)
@@ -89,10 +98,62 @@ router.delete('/:id', requireAuth, async (req, res) => {
     }
 });
 
-// Ручная очистка старых бэкапов (требует авторизации)
+// Получение списка бэкапов
+router.get('/backups', requireAuth, async (req, res) => {
+    try {
+        const backups = await getBackupsList();
+        res.json(backups);
+    } catch (error) {
+        console.error('Ошибка получения списка бэкапов:', error);
+        res.status(500).json({ error: 'Ошибка получения списка бэкапов' });
+    }
+});
+
+// Просмотр содержимого бэкапа
+router.get('/backups/:filename', requireAuth, async (req, res) => {
+    try {
+        const content = await getBackupContent(req.params.filename);
+        res.json(content);
+    } catch (error) {
+        console.error('Ошибка просмотра бэкапа:', error);
+        res.status(500).json({ error: 'Ошибка просмотра бэкапа' });
+    }
+});
+
+// Восстановление из бэкапа
+router.post('/backups/:filename/restore', requireAuth, async (req, res) => {
+    try {
+        // УБРАН confirm - проверка должна быть на клиенте
+        const restoredData = await restoreFromBackup(req.params.filename);
+        res.json({
+            success: true,
+            message: 'Данные успешно восстановлены из бэкапа',
+            data: restoredData
+        });
+    } catch (error) {
+        console.error('Ошибка восстановления из бэкапа:', error);
+        res.status(500).json({ error: 'Ошибка восстановления из бэкапа' });
+    }
+});
+
+// Удаление бэкапа
+router.delete('/backups/:filename', requireAuth, async (req, res) => {
+    try {
+        await deleteBackup(req.params.filename);
+        res.json({
+            success: true,
+            message: 'Бэкап успешно удален'
+        });
+    } catch (error) {
+        console.error('Ошибка удаления бэкапа:', error);
+        res.status(500).json({ error: 'Ошибка удаления бэкапа' });
+    }
+});
+
+// Очистка старых бэкапов
 router.post('/cleanup-backups', requireAuth, async (req, res) => {
     try {
-        await cleanupOldBackups(); // Используем cleanupOldBackups вместо forceCleanup
+        await cleanupOldBackups();
         res.json({
             success: true,
             message: 'Очистка старых бэкапов выполнена'
