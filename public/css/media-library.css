@@ -120,7 +120,7 @@
 /* Стили для просмотрщика изображений */
 .image-viewer-content {
     max-width     : 95vw;
-    max-height    : 95vh;
+    max-height    : 80vh;
     width         : 90vw;
     height        : 90vh;
     display       : flex;
