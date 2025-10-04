@@ -71,18 +71,6 @@
       "rating": 3,
       "createdAt": "2025-10-04T06:57:25.591Z",
       "updatedAt": "2025-10-04T08:04:04.615Z"
-    },
-    {
-      "id": 1759567889816,
-      "name": "asd",
-      "description": "asd",
-      "category": "asd",
-      "address": "asd",
-      "image": "borovoe1305252002.webp",
-      "price": 11,
-      "rating": 1,
-      "createdAt": "2025-10-04T08:51:29.816Z",
-      "updatedAt": "2025-10-04T08:51:41.321Z"
     }
   ]
 }

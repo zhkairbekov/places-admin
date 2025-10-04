@@ -19,9 +19,9 @@ class AdminApp {
                 window.location.href = '/auth';
                 return;
             }
-            
+
             if (!response.ok) throw new Error('Ошибка загрузки');
-            
+
             this.places = await response.json();
             this.renderPlaces();
         } catch (error) {
@@ -31,7 +31,7 @@ class AdminApp {
 
     renderPlaces() {
         const tbody = document.getElementById('placesTableBody');
-        
+
         if (this.places.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Нет мест для отображения</td></tr>';
             return;
@@ -73,25 +73,28 @@ class AdminApp {
     setupEventListeners() {
         this.modal = document.getElementById('placeModal');
         this.form = document.getElementById('placeForm');
-        
+
         document.getElementById('addPlaceBtn').addEventListener('click', () => this.showModal());
         document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
-        
+
         document.querySelector('.close').addEventListener('click', () => this.hideModal());
         document.getElementById('cancelBtn').addEventListener('click', () => this.hideModal());
-        
+
         this.form.addEventListener('submit', (e) => this.handleFormSubmit(e));
-        
+
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) this.hideModal();
         });
+
+
+        document.getElementById('cleanupBackupsBtn').addEventListener('click', () => this.cleanupBackups());
     }
 
     showModal(place = null) {
         this.modal.style.display = 'block';
         document.body.classList.add('no-scroll');
         document.getElementById('modalTitle').textContent = place ? 'Редактировать место' : 'Добавить место';
-        
+
         if (place) {
             document.getElementById('placeId').value = place.id;
             document.getElementById('name').value = place.name;
@@ -115,7 +118,7 @@ class AdminApp {
 
     async handleFormSubmit(e) {
         e.preventDefault();
-        
+
         const placeData = {
             name: document.getElementById('name').value.trim(),
             description: document.getElementById('description').value.trim(),
@@ -147,7 +150,7 @@ class AdminApp {
         try {
             const response = await fetch(url, {
                 method,
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(placeData),
@@ -175,7 +178,7 @@ class AdminApp {
             this.hideModal();
             await this.loadPlaces();
             this.showAlert('Место успешно сохранено', 'success');
-            
+
         } catch (error) {
             console.error('Ошибка сохранения:', error);
             this.showAlert(error.message, 'error');
@@ -193,21 +196,21 @@ class AdminApp {
         if (!confirm('Вы уверены, что хотите удалить это место?')) return;
 
         try {
-            const response = await fetch(`/api/places/${id}`, { 
+            const response = await fetch(`/api/places/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
-            
+
             if (response.status === 401) {
                 window.location.href = '/auth';
                 return;
             }
-            
+
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.error || 'Ошибка удаления');
             }
-            
+
             await this.loadPlaces();
             this.showAlert('Место успешно удалено', 'success');
         } catch (error) {
@@ -220,13 +223,13 @@ class AdminApp {
         if (!confirm('Вы уверены, что хотите выйти?')) {
             return;
         }
-        
+
         try {
-            const response = await fetch('/api/auth/logout', { 
+            const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 alert('Вы успешно вышли из системы');
@@ -240,6 +243,30 @@ class AdminApp {
         }
     }
 
+    async cleanupBackups() {
+        if (!confirm('Очистить бэкапы старше 14 дней?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/places/cleanup-backups', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                this.showAlert(result.message, 'success');
+            } else {
+                throw new Error(result.error || 'Ошибка очистки');
+            }
+        } catch (error) {
+            console.error('Ошибка очистки бэкапов:', error);
+            this.showAlert('Ошибка очистки бэкапов', 'error');
+        }
+    }
+
     showAlert(message, type) {
         const container = document.getElementById('alertContainer');
         container.innerHTML = `
@@ -247,7 +274,7 @@ class AdminApp {
                 ${message}
             </div>
         `;
-        
+
         setTimeout(() => {
             container.innerHTML = '';
         }, 5000);

@@ -2,7 +2,7 @@ const express = require('express');
 const { validationResult } = require('express-validator');
 const { requireAuth } = require('../middleware/auth');
 const { placeValidation } = require('../middleware/validation');
-const { loadPlaces, savePlaces, cleanData } = require('../utils/database');
+const { loadPlaces, savePlaces, cleanData, cleanupOldBackups } = require('../utils/database'); // Исправленный импорт
 const router = express.Router();
 
 // Получение всех мест (публичный доступ)
@@ -44,9 +44,6 @@ router.post('/', requireAuth, placeValidation, async (req, res) => {
 // Обновление места (требует авторизации)
 router.put('/:id', requireAuth, placeValidation, async (req, res) => {
     try {
-        console.log('🔄 Начало обновления места. Сессия:', req.session);
-        console.log('📝 Данные для обновления:', req.body);
-        
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -66,12 +63,9 @@ router.put('/:id', requireAuth, placeValidation, async (req, res) => {
         };
 
         await savePlaces(data);
-        
-        console.log('✅ Место успешно обновлено');
         res.json(data.places[placeIndex]);
-        
     } catch (error) {
-        console.error('❌ Ошибка обновления места:', error);
+        console.error('Ошибка обновления места:', error);
         res.status(500).json({ error: 'Ошибка обновления места' });
     }
 });
@@ -92,6 +86,23 @@ router.delete('/:id', requireAuth, async (req, res) => {
     } catch (error) {
         console.error('Ошибка удаления места:', error);
         res.status(500).json({ error: 'Ошибка удаления места' });
+    }
+});
+
+// Ручная очистка старых бэкапов (требует авторизации)
+router.post('/cleanup-backups', requireAuth, async (req, res) => {
+    try {
+        await cleanupOldBackups(); // Используем cleanupOldBackups вместо forceCleanup
+        res.json({
+            success: true,
+            message: 'Очистка старых бэкапов выполнена'
+        });
+    } catch (error) {
+        console.error('Ошибка очистки бэкапов:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка очистки бэкапов'
+        });
     }
 });
 
