@@ -52,9 +52,9 @@ router.post('/', requireAuth, upload.single('image'), async (req, res) => {
         }
 
         const imageUrl = `/images/${req.file.filename}`;
-        
+
         console.log('✅ Файл загружен:', req.file.filename);
-        
+
         res.json({
             success: true,
             filename: req.file.filename,
@@ -75,9 +75,9 @@ router.delete('/:filename', requireAuth, async (req, res) => {
         const filePath = path.join('images', filename);
 
         await fs.unlink(filePath);
-        
+
         console.log('🗑️ Файл удален:', filename);
-        
+
         res.json({
             success: true,
             message: 'Файл успешно удален'
@@ -98,7 +98,7 @@ router.get('/gallery', requireAuth, async (req, res) => {
     try {
         await ensureImagesDir();
         const files = await fs.readdir('images');
-        
+
         const images = await Promise.all(
             files.filter(file => {
                 const ext = path.extname(file).toLowerCase();
@@ -106,7 +106,7 @@ router.get('/gallery', requireAuth, async (req, res) => {
             }).map(async (file) => {
                 const filePath = path.join('images', file);
                 const stats = await fs.stat(filePath);
-                
+
                 return {
                     filename: file,
                     url: `/images/${file}`,

@@ -6,18 +6,18 @@ const router = express.Router();
 // Главная страница с проверкой авторизации
 router.get('/', (req, res) => {
     const isAuthenticated = req.session.authenticated && req.session.user === process.env.ADMIN_USER;
-    
+
     // Читаем HTML файл и модифицируем его
     const fs = require('fs');
     const filePath = path.join(__dirname, '..', 'public', 'index.html');
-    
+
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             return res.status(500).send('Ошибка загрузки страницы');
         }
-        
+
         let html = data;
-        
+
         if (isAuthenticated) {
             // Добавляем ссылку для авторизованных
             html = html.replace(
@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
                 </div>`
             );
         }
-        
+
         res.send(html);
     });
 });
@@ -65,7 +65,7 @@ router.get('/media-library', checkAdminAuth, (req, res) => {
 router.get('/public/*', (req, res, next) => {
     const allowedExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico'];
     const fileExtension = path.extname(req.path).toLowerCase();
-    
+
     if (allowedExtensions.includes(fileExtension)) {
         // Разрешаем Express static middleware обработать файл
         express.static('public')(req, res, next);

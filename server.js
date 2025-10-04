@@ -10,7 +10,7 @@ const authRoutes = require('./routes/auth');
 const placesRoutes = require('./routes/places');
 const pagesRoutes = require('./routes/pages');
 const uploadRoutes = require('./routes/upload');
-const mediaRoutes = require('./routes/media'); // ← ДОБАВЬТЕ ЭТУ СТРОКУ
+const mediaRoutes = require('./routes/media'); 
 const { cleanupOldBackups } = require('./utils/database');
 
 // Настройка middleware
@@ -20,7 +20,7 @@ middleware.setupMiddleware(app);
 app.use('/api/auth', authRoutes);
 app.use('/api/places', placesRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/media', mediaRoutes); // ← ДОБАВЬТЕ ЭТУ СТРОКУ
+app.use('/api/media', mediaRoutes);
 app.use('/', pagesRoutes);
 
 // Автоматическая очистка старых бэкапов при запуске сервера
@@ -28,12 +28,12 @@ async function initializeServer() {
     try {
         console.log('🧹 Проверка старых бэкапов...');
         await cleanupOldBackups();
-        
+
         setInterval(async () => {
             console.log('🕒 Запуск периодической очистки бэкапов...');
             await cleanupOldBackups();
         }, 24 * 60 * 60 * 1000);
-        
+
     } catch (error) {
         console.error('Ошибка инициализации сервера:', error);
     }
@@ -45,7 +45,7 @@ app.listen(PORT, async () => {
     console.log(`🔐 Админ login: ${process.env.ADMIN_USER}`);
     console.log(`🔐 Админ password: ${process.env.ADMIN_PASS}`);
     console.log(`🖼️ Медиатека доступна по /media-library`);
-    
+
     // Проверяем и создаем необходимые директории
     try {
         const fs = require('fs').promises;
@@ -56,6 +56,6 @@ app.listen(PORT, async () => {
     } catch (error) {
         console.error('❌ Ошибка создания директорий:', error);
     }
-    
+
     await initializeServer();
 });

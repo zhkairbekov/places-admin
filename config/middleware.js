@@ -51,7 +51,7 @@ function setupMiddleware(app) {
         }));
     }
 
-    app.use(express.json({ limit: '50mb' })); // Увеличили лимит для base64
+    app.use(express.json({ limit: '50mb' }));
     app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
     // Статические файлы - CSS, JS
@@ -69,6 +69,9 @@ function setupMiddleware(app) {
             res.set('Cache-Control', 'public, max-age=86400');
         }
     }));
+
+    // Статические файлы - bootstrap
+    app.use('/bootstrap', express.static('node_modules/bootstrap/dist'));
 
     // Настройка сессий
     app.use(session({

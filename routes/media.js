@@ -20,10 +20,6 @@ router.get('/gallery', requireAuth, async (req, res) => {
         try {
             await fs.access(uploadDir);
         } catch (error) {
-            // Если директории нет, возвращаем пустой массив
-            // console.log('📁 Директория images не найдена, создаем...');
-            // await fs.mkdir(uploadDir, { recursive: true });
-            // return res.json([]);
             console.error('❌ Полная ошибка в /api/media/gallery:', error);
             console.error('❌ Stack trace:', error.stack);
             return res.status(500).json({

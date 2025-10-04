@@ -335,6 +335,18 @@ class AdminApp {
             if (e.target === document.getElementById('backupContentModal')) this.hideModal('backupContentModal');
         });
 
+        document.getElementById('mediaLibraryModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('mediaLibraryModal')) this.hideModal('mediaLibraryModal');
+        });
+
+        // Обработчики для кнопок с data-modal атрибутом (включая кнопку "Отмена")
+        document.addEventListener('click', (e) => {
+            if (e.target.hasAttribute('data-modal')) {
+                const modalId = e.target.getAttribute('data-modal');
+                this.hideModal(modalId);
+            }
+        });
+
         // Обработчики для медиатеки
         document.getElementById('browseMediaBtn').addEventListener('click', () => this.showMediaLibrary());
         document.getElementById('refreshLibraryBtn').addEventListener('click', () => this.loadMediaLibrary());
@@ -725,12 +737,12 @@ class AdminApp {
             const response = await fetch('/api/upload/gallery', {
                 credentials: 'include'
             });
-            
+
             if (!response.ok) throw new Error('Ошибка загрузки медиатеки');
-            
+
             this.mediaLibrary = await response.json();
             this.renderMediaLibrary();
-            
+
         } catch (error) {
             console.error('Ошибка загрузки медиатеки:', error);
             this.showAlert('Ошибка загрузки медиатеки', 'error');
@@ -740,7 +752,7 @@ class AdminApp {
     renderMediaLibrary() {
         const container = document.getElementById('mediaLibraryGrid');
         const selectButton = document.getElementById('selectImageBtn');
-        
+
         if (this.mediaLibrary.length === 0) {
             container.innerHTML = `
                 <div class="empty-media">
@@ -756,22 +768,22 @@ class AdminApp {
         }
 
         container.innerHTML = this.mediaLibrary.map(image => `
-            <div class="media-item ${this.selectedMediaItem === image.url ? 'selected' : ''}" 
-                 data-url="${image.url}" 
-                 data-filename="${image.filename}">
-                <img src="${image.url}" alt="${image.filename}" class="media-item-image" 
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23f7fafc\"/><text x=\"50\" y=\"50\" font-size=\"14\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23a0aec0\">🚫</text></svg>'">
-                <div class="media-item-info">
-                    <div class="media-item-filename" title="${image.filename}">${image.filename}</div>
-                    <div class="media-item-size">${image.formattedSize}</div>
-                </div>
-                <div class="media-item-actions">
-                    <button class="btn btn-danger btn-sm" onclick="admin.deleteMediaItem('${image.filename}')" title="Удалить">
-                        🗑️
-                    </button>
-                </div>
-            </div>
-        `).join('');
+    <div class="media-item ${this.selectedMediaItem === image.url ? 'selected' : ''}" 
+         data-url="${image.url}" 
+         data-filename="${image.filename}">
+        <img src="${image.url}" alt="${image.filename}" class="media-item-image" 
+             onerror="this.src='data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 100 100&quot;&gt;&lt;rect width=&quot;100&quot; height=&quot;100&quot; fill=&quot;#f7fafc&quot;/&gt;&lt;text x=&quot;50&quot; y=&quot;50&quot; font-size=&quot;14&quot; text-anchor=&quot;middle&quot; dy=&quot;.3em&quot; fill=&quot;#a0aec0&quot;&gt;🚫&lt;/text&gt;&lt;/svg&gt;'">
+        <div class="media-item-info">
+            <div class="media-item-filename" title="${image.filename}">${image.filename}</div>
+            <div class="media-item-size">${image.formattedSize}</div>
+        </div>
+        <div class="media-item-actions">
+            <button class="btn btn-danger btn-sm" onclick="admin.deleteMediaItem('${image.filename.replace(/'/g, "\\'")}')" title="Удалить">
+                🗑️
+            </button>
+        </div>
+    </div>
+`).join('');
 
         // Добавляем обработчики выбора
         container.querySelectorAll('.media-item').forEach(item => {
@@ -788,11 +800,11 @@ class AdminApp {
     selectMediaInLibrary(item) {
         // Снимаем выделение со всех элементов
         document.querySelectorAll('.media-item').forEach(i => i.classList.remove('selected'));
-        
+
         // Выделяем текущий элемент
         item.classList.add('selected');
         this.selectedMediaItem = item.getAttribute('data-url');
-        
+
         // Активируем кнопку выбора
         document.getElementById('selectImageBtn').disabled = false;
     }
@@ -838,11 +850,11 @@ class AdminApp {
             if (response.ok) {
                 this.showAlert('Изображение успешно загружено в медиатеку', 'success');
                 await this.loadMediaLibrary(); // Обновляем галерею
-                
+
                 // Автоматически выбираем новое изображение
                 this.selectedMediaItem = result.url;
                 this.renderMediaLibrary();
-                
+
             } else {
                 throw new Error(result.error || 'Ошибка загрузки');
             }
@@ -868,14 +880,14 @@ class AdminApp {
 
             if (response.ok) {
                 this.showAlert('Изображение удалено из медиатеки', 'success');
-                
+
                 // Если удаляем выбранное изображение - сбрасываем выбор
                 if (this.selectedMediaItem && this.selectedMediaItem.includes(filename)) {
                     this.selectedMediaItem = null;
                 }
-                
+
                 await this.loadMediaLibrary(); // Обновляем галерею
-                
+
             } else {
                 throw new Error(result.error);
             }

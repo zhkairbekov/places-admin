@@ -8,9 +8,9 @@
       "address": "Дворцовая пл., 2, Санкт-Петербург",
       "price": 3500,
       "rating": 4.8,
-      "image": "/images/top.webp",
+      "image": "/images/1759595325216-153431661.png",
       "createdAt": "2024-01-15T10:00:00.000Z",
-      "updatedAt": "2025-10-04T12:54:27.738Z"
+      "updatedAt": "2025-10-04T16:28:59.566Z"
     },
     {
       "id": 2,
@@ -20,9 +20,9 @@
       "address": "Красная пл., Москва",
       "price": 0,
       "rating": 4.8,
-      "image": "/images/1759577534548-990502554.jpg",
+      "image": "/images/1759595375314-119974472.webp",
       "createdAt": "2024-01-16T14:30:00.000Z",
-      "updatedAt": "2025-10-04T12:54:52.122Z"
+      "updatedAt": "2025-10-04T16:29:37.418Z"
     },
     {
       "id": 3,
@@ -56,33 +56,21 @@
       "address": "Остров Кижи, Республика Карелия",
       "price": 600,
       "rating": 4.6,
-      "image": "borovoe1305252002.webp",
+      "image": "/images/1759595325216-153431661.png",
       "createdAt": "2024-01-19T11:20:00.000Z",
-      "updatedAt": "2024-01-19T11:20:00.000Z"
+      "updatedAt": "2025-10-04T16:37:54.526Z"
     },
     {
-      "id": 1759561045591,
-      "name": "ads",
-      "description": "ads",
-      "category": "asd",
-      "address": "asd",
-      "image": "borovoe1305252002.webp",
-      "price": 1000,
-      "rating": 3,
-      "createdAt": "2025-10-04T06:57:25.591Z",
-      "updatedAt": "2025-10-04T08:04:04.615Z"
-    },
-    {
-      "id": 1759567889816,
-      "name": "asd",
-      "description": "asd",
-      "category": "asd",
-      "address": "asd",
-      "image": "/images/1759577534548-990502554.jpg",
-      "price": 11,
-      "rating": 1,
-      "createdAt": "2025-10-04T08:51:29.816Z",
-      "updatedAt": "2025-10-04T11:32:18.176Z"
+      "id": 6,
+      "name": "Сочи Парк",
+      "description": "Тематический парк развлечений в Сочи с аттракционами и шоу для всей семьи.",
+      "category": "Развлечения",
+      "address": "Адлерский р-н, Сочи, Краснодарский край",
+      "price": 1500,
+      "rating": 4.5,
+      "image": "/images/1759595375314-119974472.webp",
+      "createdAt": "2024-01-20T13:00:00.000Z",
+      "updatedAt": "2025-10-04T16:38:07.611Z"
     }
   ]
 }
