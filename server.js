@@ -9,6 +9,7 @@ const middleware = require('./config/middleware');
 const authRoutes = require('./routes/auth');
 const placesRoutes = require('./routes/places');
 const pagesRoutes = require('./routes/pages');
+const { sessionHandler } = require('./middleware/sessionHandler');
 
 // Настройка middleware
 middleware.setupMiddleware(app);
@@ -17,6 +18,7 @@ middleware.setupMiddleware(app);
 app.use('/api/auth', authRoutes);       // ← Все auth роуты начинаются с /api/auth
 app.use('/api/places', placesRoutes);   // ← Все places роуты начинаются с /api/places
 app.use('/', pagesRoutes);              // ← Страницы
+app.use(sessionHandler);
 
 // Запуск сервера
 app.listen(PORT, () => {

@@ -9,7 +9,6 @@ class PlacesApp {
         await this.checkAuth();
         await this.loadPlaces();
         this.renderPlaces();
-        this.updateAdminLink();
     }
 
     async checkAuth() {
@@ -35,25 +34,6 @@ class PlacesApp {
         } catch (error) {
             this.showError('Не удалось загрузить данные мест');
             console.error('Ошибка:', error);
-        }
-    }
-
-    updateAdminLink() {
-        const adminLinkContainer = document.getElementById('adminLinkContainer');
-
-        // Всегда показываем контейнер
-        adminLinkContainer.style.display = 'block';
-
-        const link = adminLinkContainer.querySelector('a');
-
-        if (this.isAuthenticated) {
-            // Авторизован - прямая ссылка на админку
-            link.href = '/admin'; // Изменено с /admin.html
-            link.innerHTML = '🔐 Админ-панель';
-        } else {
-            // Не авторизован - ссылка на страницу логина
-            link.href = '/auth'; // Изменено с /admin-login.html
-            link.innerHTML = '🔐 Вход в админ-панель';
         }
     }
 

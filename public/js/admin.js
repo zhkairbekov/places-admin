@@ -7,22 +7,21 @@ class AdminApp {
     async init() {
         await this.loadPlaces();
         this.setupEventListeners();
-
-        // Проверяем авторизацию периодически
-        this.setupAuthCheck();
+        // Убраны setupActivityTracking() и setupAuthCheck()
     }
 
     async loadPlaces() {
         try {
-            const response = await fetch('/api/places');
+            const response = await fetch('/api/places', {
+                credentials: 'include'
+            });
             if (response.status === 401) {
-                // Не авторизован - редирект на страницу логина
-                window.location.href = '/auth'; // Изменено с /admin-login.html
+                window.location.href = '/auth';
                 return;
             }
-
+            
             if (!response.ok) throw new Error('Ошибка загрузки');
-
+            
             this.places = await response.json();
             this.renderPlaces();
         } catch (error) {
@@ -32,7 +31,7 @@ class AdminApp {
 
     renderPlaces() {
         const tbody = document.getElementById('placesTableBody');
-
+        
         if (this.places.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Нет мест для отображения</td></tr>';
             return;
@@ -74,40 +73,25 @@ class AdminApp {
     setupEventListeners() {
         this.modal = document.getElementById('placeModal');
         this.form = document.getElementById('placeForm');
-
+        
         document.getElementById('addPlaceBtn').addEventListener('click', () => this.showModal());
         document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
-
+        
         document.querySelector('.close').addEventListener('click', () => this.hideModal());
         document.getElementById('cancelBtn').addEventListener('click', () => this.hideModal());
-
+        
         this.form.addEventListener('submit', (e) => this.handleFormSubmit(e));
-
+        
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) this.hideModal();
         });
-    }
-
-    setupAuthCheck() {
-        // Периодически проверяем авторизацию
-        setInterval(async () => {
-            try {
-                const response = await fetch('/api/auth/check');
-                const data = await response.json();
-                if (!data.authenticated) {
-                    window.location.href = '/auth';
-                }
-            } catch (error) {
-                console.error('Ошибка проверки авторизации:', error);
-            }
-        }, 30000); // Проверяем каждые 30 секунд
     }
 
     showModal(place = null) {
         this.modal.style.display = 'block';
         document.body.classList.add('no-scroll');
         document.getElementById('modalTitle').textContent = place ? 'Редактировать место' : 'Добавить место';
-
+        
         if (place) {
             document.getElementById('placeId').value = place.id;
             document.getElementById('name').value = place.name;
@@ -131,8 +115,7 @@ class AdminApp {
 
     async handleFormSubmit(e) {
         e.preventDefault();
-
-        // Собираем данные формы
+        
         const placeData = {
             name: document.getElementById('name').value.trim(),
             description: document.getElementById('description').value.trim(),
@@ -141,7 +124,6 @@ class AdminApp {
             image: document.getElementById('image').value.trim()
         };
 
-        // Обрабатываем числовые поля
         const price = document.getElementById('price').value;
         const rating = document.getElementById('rating').value;
 
@@ -153,7 +135,6 @@ class AdminApp {
             placeData.rating = parseFloat(rating);
         }
 
-        // Валидация обязательных полей
         if (!placeData.name || !placeData.category) {
             this.showAlert('Название и категория обязательны для заполнения', 'error');
             return;
@@ -166,21 +147,24 @@ class AdminApp {
         try {
             const response = await fetch(url, {
                 method,
-                headers: {
+                headers: { 
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(placeData)
+                body: JSON.stringify(placeData),
+                credentials: 'include'
             });
 
             if (response.status === 401) {
-                window.location.href = '/auth';
+                this.showAlert('Сессия завершена. Пожалуйста, войдите снова.', 'error');
+                setTimeout(() => {
+                    window.location.href = '/auth';
+                }, 2000);
                 return;
             }
 
             const result = await response.json();
 
             if (!response.ok) {
-                // Показываем детали ошибки валидации
                 if (result.errors) {
                     const errorMessages = result.errors.map(err => err.msg).join(', ');
                     throw new Error(`Ошибки валидации: ${errorMessages}`);
@@ -191,6 +175,7 @@ class AdminApp {
             this.hideModal();
             await this.loadPlaces();
             this.showAlert('Место успешно сохранено', 'success');
+            
         } catch (error) {
             console.error('Ошибка сохранения:', error);
             this.showAlert(error.message, 'error');
@@ -208,20 +193,21 @@ class AdminApp {
         if (!confirm('Вы уверены, что хотите удалить это место?')) return;
 
         try {
-            const response = await fetch(`/api/places/${id}`, {
-                method: 'DELETE'
+            const response = await fetch(`/api/places/${id}`, { 
+                method: 'DELETE',
+                credentials: 'include'
             });
-
+            
             if (response.status === 401) {
                 window.location.href = '/auth';
                 return;
             }
-
+            
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.error || 'Ошибка удаления');
             }
-
+            
             await this.loadPlaces();
             this.showAlert('Место успешно удалено', 'success');
         } catch (error) {
@@ -231,14 +217,19 @@ class AdminApp {
     }
 
     async logout() {
+        if (!confirm('Вы уверены, что хотите выйти?')) {
+            return;
+        }
+        
         try {
-            const response = await fetch('/api/auth/logout', {
-                method: 'POST'
+            const response = await fetch('/api/auth/logout', { 
+                method: 'POST',
+                credentials: 'include'
             });
-
+            
             if (response.ok) {
                 const data = await response.json();
-                // Редирект на главную страницу
+                alert('Вы успешно вышли из системы');
                 window.location.href = data.redirect || '/';
             } else {
                 throw new Error('Ошибка при выходе');
@@ -256,7 +247,7 @@ class AdminApp {
                 ${message}
             </div>
         `;
-
+        
         setTimeout(() => {
             container.innerHTML = '';
         }, 5000);

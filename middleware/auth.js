@@ -1,5 +1,8 @@
 function requireAuth(req, res, next) {
     if (req.session.authenticated && req.session.user === process.env.ADMIN_USER) {
+        // Обновляем время жизни сессии при каждой активности
+        req.session._garbage = Date();
+        req.session.touch();
         next();
     } else {
         res.status(401).json({ error: 'Требуется авторизация' });

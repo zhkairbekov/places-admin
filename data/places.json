@@ -6,11 +6,11 @@
       "description": "Один из крупнейших художественных музеев мира, расположенный в Санкт-Петербурге.",
       "category": "Музей",
       "address": "Дворцовая пл., 2, Санкт-Петербург",
-      "price": 500,
-      "rating": 4.9,
+      "price": 3500,
+      "rating": 4.8,
       "image": "borovoe1305252002.webp",
       "createdAt": "2024-01-15T10:00:00.000Z",
-      "updatedAt": "2024-01-15T10:00:00.000Z"
+      "updatedAt": "2025-10-04T08:51:07.305Z"
     },
     {
       "id": 2,
@@ -22,7 +22,7 @@
       "rating": 4.8,
       "image": "borovoe1305252002.webp",
       "createdAt": "2024-01-16T14:30:00.000Z",
-      "updatedAt": "2024-01-16T14:30:00.000Z"
+      "updatedAt": "2025-10-04T08:51:34.495Z"
     },
     {
       "id": 3,
@@ -68,9 +68,21 @@
       "address": "asd",
       "image": "borovoe1305252002.webp",
       "price": 1000,
-      "rating": 1,
+      "rating": 3,
       "createdAt": "2025-10-04T06:57:25.591Z",
-      "updatedAt": "2025-10-04T06:57:25.591Z"
+      "updatedAt": "2025-10-04T08:04:04.615Z"
+    },
+    {
+      "id": 1759567889816,
+      "name": "asd",
+      "description": "asd",
+      "category": "asd",
+      "address": "asd",
+      "image": "borovoe1305252002.webp",
+      "price": 11,
+      "rating": 1,
+      "createdAt": "2025-10-04T08:51:29.816Z",
+      "updatedAt": "2025-10-04T08:51:41.321Z"
     }
   ]
 }

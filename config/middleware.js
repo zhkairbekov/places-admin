@@ -55,25 +55,32 @@ function setupMiddleware(app) {
     // Статические файлы - изображения
     app.use('/images', express.static('images', {
         setHeaders: (res, path) => {
-            // Кэшируем изображения на 1 день
             res.set('Cache-Control', 'public, max-age=86400');
         }
     }));
 
-    // Настройка сессий
+    // Настройка сессий - ВЕЧНАЯ СЕССИЯ
     app.use(session({
         secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
-        resave: false,
+        resave: true,
         saveUninitialized: false,
         cookie: {
             secure: false,
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-        }
+            maxAge: 365 * 24 * 60 * 60 * 1000 // 1 ГОД вместо 2 часов
+        },
+        // Отключаем автоматическое удаление старых сессий
+        rolling: false
     }));
 
     // Rate limiting для авторизации
     app.use('/api/auth/login', authLimiter);
+
+    // Логирование запросов для отладки
+    app.use((req, res, next) => {
+        console.log('📨', new Date().toISOString(), req.method, req.url);
+        next();
+    });
 }
 
 module.exports = { setupMiddleware };

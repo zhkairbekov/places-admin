@@ -44,6 +44,9 @@ router.post('/', requireAuth, placeValidation, async (req, res) => {
 // Обновление места (требует авторизации)
 router.put('/:id', requireAuth, placeValidation, async (req, res) => {
     try {
+        console.log('🔄 Начало обновления места. Сессия:', req.session);
+        console.log('📝 Данные для обновления:', req.body);
+        
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -63,9 +66,12 @@ router.put('/:id', requireAuth, placeValidation, async (req, res) => {
         };
 
         await savePlaces(data);
+        
+        console.log('✅ Место успешно обновлено');
         res.json(data.places[placeIndex]);
+        
     } catch (error) {
-        console.error('Ошибка обновления места:', error);
+        console.error('❌ Ошибка обновления места:', error);
         res.status(500).json({ error: 'Ошибка обновления места' });
     }
 });
