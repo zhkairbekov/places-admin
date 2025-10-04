@@ -12,15 +12,15 @@ class AdminLogin {
 
     async checkExistingAuth() {
         try {
-            const response = await fetch('/api/check-auth');
+            const response = await fetch('/api/auth/check');
             const data = await response.json();
 
             if (data.authenticated) {
                 // Уже авторизован, редирект в админку
-                window.location.href = '/admin.html';
+                window.location.href = '/admin'; // Изменено с /admin.html
             }
         } catch (error) {
-            // Ошибка - остаемся на странице логина
+            console.log('Пользователь не авторизован');
         }
     }
 
@@ -31,7 +31,7 @@ class AdminLogin {
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -41,9 +41,8 @@ class AdminLogin {
 
             if (data.success) {
                 // Успешный вход, редирект в админку
-                window.location.href = '/admin.html';
+                window.location.href = '/admin'; // Изменено с /admin.html
             } else {
-                // Показываем модальное окно с ошибкой
                 this.showErrorModal(data.error);
             }
         } catch (error) {

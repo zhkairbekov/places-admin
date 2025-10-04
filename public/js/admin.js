@@ -17,7 +17,7 @@ class AdminApp {
             const response = await fetch('/api/places');
             if (response.status === 401) {
                 // Не авторизован - редирект на страницу логина
-                window.location.href = '/admin-login.html';
+                window.location.href = '/auth'; // Изменено с /admin-login.html
                 return;
             }
 
@@ -83,7 +83,6 @@ class AdminApp {
 
         this.form.addEventListener('submit', (e) => this.handleFormSubmit(e));
 
-        // Закрытие модального окна при клике вне его
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) this.hideModal();
         });
@@ -93,10 +92,10 @@ class AdminApp {
         // Периодически проверяем авторизацию
         setInterval(async () => {
             try {
-                const response = await fetch('/api/check-auth');
+                const response = await fetch('/api/auth/check');
                 const data = await response.json();
                 if (!data.authenticated) {
-                    window.location.href = '/admin-login.html';
+                    window.location.href = '/auth';
                 }
             } catch (error) {
                 console.error('Ошибка проверки авторизации:', error);
@@ -106,7 +105,7 @@ class AdminApp {
 
     showModal(place = null) {
         this.modal.style.display = 'block';
-        document.body.classList.add('no-scroll'); // Блокируем скролл
+        document.body.classList.add('no-scroll');
         document.getElementById('modalTitle').textContent = place ? 'Редактировать место' : 'Добавить место';
 
         if (place) {
@@ -126,7 +125,7 @@ class AdminApp {
 
     hideModal() {
         this.modal.style.display = 'none';
-        document.body.classList.remove('no-scroll'); // Разблокируем скролл
+        document.body.classList.remove('no-scroll');
         this.form.reset();
     }
 
@@ -174,7 +173,7 @@ class AdminApp {
             });
 
             if (response.status === 401) {
-                window.location.href = '/admin-login.html';
+                window.location.href = '/auth';
                 return;
             }
 
@@ -214,7 +213,7 @@ class AdminApp {
             });
 
             if (response.status === 401) {
-                window.location.href = '/admin-login.html';
+                window.location.href = '/auth';
                 return;
             }
 
@@ -233,10 +232,20 @@ class AdminApp {
 
     async logout() {
         try {
-            await fetch('/api/logout', { method: 'POST' });
-            window.location.href = '/admin-login.html';
+            const response = await fetch('/api/auth/logout', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Редирект на главную страницу
+                window.location.href = data.redirect || '/';
+            } else {
+                throw new Error('Ошибка при выходе');
+            }
         } catch (error) {
             console.error('Ошибка выхода:', error);
+            this.showAlert('Ошибка при выходе из системы', 'error');
         }
     }
 

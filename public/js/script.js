@@ -1,12 +1,28 @@
 class PlacesApp {
     constructor() {
         this.places = [];
+        this.isAuthenticated = false;
         this.init();
     }
 
     async init() {
+        await this.checkAuth();
         await this.loadPlaces();
         this.renderPlaces();
+        this.updateAdminLink();
+    }
+
+    async checkAuth() {
+        try {
+            const response = await fetch('/api/auth/check');
+            if (response.ok) {
+                const data = await response.json();
+                this.isAuthenticated = data.authenticated;
+            }
+        } catch (error) {
+            console.log('Ошибка проверки авторизации:', error);
+            this.isAuthenticated = false;
+        }
     }
 
     async loadPlaces() {
@@ -22,6 +38,25 @@ class PlacesApp {
         }
     }
 
+    updateAdminLink() {
+        const adminLinkContainer = document.getElementById('adminLinkContainer');
+
+        // Всегда показываем контейнер
+        adminLinkContainer.style.display = 'block';
+
+        const link = adminLinkContainer.querySelector('a');
+
+        if (this.isAuthenticated) {
+            // Авторизован - прямая ссылка на админку
+            link.href = '/admin'; // Изменено с /admin.html
+            link.innerHTML = '🔐 Админ-панель';
+        } else {
+            // Не авторизован - ссылка на страницу логина
+            link.href = '/auth'; // Изменено с /admin-login.html
+            link.innerHTML = '🔐 Вход в админ-панель';
+        }
+    }
+
     renderPlaces() {
         const grid = document.getElementById('placesGrid');
 
@@ -31,19 +66,44 @@ class PlacesApp {
         }
 
         grid.innerHTML = this.places.map(place => `
-            <div class="place-card">
-                ${place.image ? `<img src="images/${place.image}" alt="${place.name}" class="place-image" onerror="this.style.display='none'">` : ''}
-                <div class="place-content">
-                    <span class="place-category">${this.escapeHtml(place.category)}</span>
-                    <h3 class="place-name">${this.escapeHtml(place.name)}</h3>
-                    <p class="place-description">${this.escapeHtml(place.description || '')}</p>
-                    <div class="place-details">
-                        ${place.price ? `<span class="place-price">${place.price} руб.</span>` : ''}
-                        ${place.rating ? `<span class="place-rating">★ ${place.rating}</span>` : ''}
-                    </div>
+        <div class="place-card">
+            ${place.image ? `
+                <img src="${this.getImageUrl(place.image)}" 
+                     alt="${place.name}" 
+                     class="place-image"
+                     onerror="this.style.display='none'">
+            ` : '<div class="placeholder-image">🏞️</div>'}
+            <div class="place-content">
+                <span class="place-category">${this.escapeHtml(place.category)}</span>
+                <h3 class="place-name">${this.escapeHtml(place.name)}</h3>
+                <p class="place-description">${this.escapeHtml(place.description || '')}</p>
+                <div class="place-details">
+                    ${place.price ? `<span class="place-price">${place.price} руб.</span>` : ''}
+                    ${place.rating ? `<span class="place-rating">★ ${place.rating}</span>` : ''}
                 </div>
             </div>
-        `).join('');
+        </div>
+    `).join('');
+    }
+
+    getImageUrl(imagePath) {
+        // Если это полный URL (http/https), используем как есть
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+
+        // Если это data URI, используем как есть
+        if (imagePath.startsWith('data:')) {
+            return imagePath;
+        }
+
+        // Локальные изображения - добавляем /images/ перед путем
+        if (imagePath.startsWith('/')) {
+            return imagePath; // Уже абсолютный путь
+        }
+
+        // Относительные пути - обслуживаем из папки /images
+        return `/images/${imagePath}`;
     }
 
     hideLoading() {

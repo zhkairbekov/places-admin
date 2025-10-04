@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Доступ запрещен - 403</title>
+        <link rel="stylesheet" href="/public/css/style.css">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚫</text></svg>">
+        <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+        }
+        .error-content {
+            max-width: 500px;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: #ff6b6b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <div class="error-content">
+                <div class="error-code">403</div>
+                <div class="error-message">Доступ запрещен</div>
+                <p>У вас нет прав для доступа к этому ресурсу.</p>
+                <a href="/" class="btn">Вернуться на главную</a>
+                <div style="margin-top: 1rem;">
+                    <a href="/auth" style="color: white; text-decoration: underline;">Войти в систему</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
